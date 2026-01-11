@@ -1,0 +1,80 @@
+//doubly linked list
+#include<stdio.h>
+#include<stdlib.h>
+
+struct emp {
+    char ssn[20], name[20], dept[20], desig[20];
+    int sal;
+    long phno;
+    struct emp *llink, *rlink;
+};
+typedef struct emp* NODE;
+NODE start = NULL;
+
+NODE create() {
+    NODE n = (NODE)malloc(sizeof(struct emp));
+    printf("\nSSN: "); scanf("%s", n->ssn);
+    printf("Name: "); scanf("%s", n->name);
+    printf("Dept: "); scanf("%s", n->dept);
+    printf("Designation: "); scanf("%s", n->desig);
+    printf("Salary: "); scanf("%d", &n->sal);
+    printf("Phone: "); scanf("%ld", &n->phno);
+    n->llink = n->rlink = NULL;
+    return n;
+}
+
+void insert_end() {
+    NODE n = create();
+    if(!start) start = n;
+    else {
+        NODE t = start;
+        while(t->rlink) t = t->rlink;
+        t->rlink = n;
+        n->llink = t;
+    }
+}
+
+void delete_end() {
+    if(!start) { printf("\nEmpty"); return; }
+    if(!start->rlink) {
+        printf("\nDeleted: %s", start->ssn);
+        free(start);
+        start = NULL;
+        return;
+    }
+    NODE t = start, p = NULL;
+    while(t->rlink) { p = t; t = t->rlink; }
+    p->rlink = NULL;
+    printf("\nDeleted: %s", t->ssn);
+    free(t);
+}
+
+void display() {
+    if(!start) { printf("\nEmpty"); return; }
+    NODE t = start;
+    int c = 0;
+    while(t) {
+        printf("\n%s %s %s %s %d %ld", t->ssn, t->name, t->dept, t->desig, t->sal, t->phno);
+        t = t->rlink;
+        c++;
+    }
+    printf("\nCount: %d", c);
+}
+
+int main() {
+    int ch, n;
+    while(1) {
+        printf("\n\n1.Create 2.Display 3.Insert End 4.Delete End 5.Exit\nChoice: ");
+        scanf("%d", &ch);
+        switch(ch) {
+            case 1:
+                printf("Enter n: "); scanf("%d", &n);
+                for(int i=0; i<n; i++) insert_end();
+                break;
+            case 2: display(); break;
+            case 3: insert_end(); break;
+            case 4: delete_end(); break;
+            case 5: return 0;
+        }
+    }
+}

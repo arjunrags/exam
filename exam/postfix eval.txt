@@ -1,0 +1,44 @@
+//postfix eval
+#include<stdio.h>
+#include<ctype.h>
+#include<math.h>
+#define MAX 100
+int top=-1, s[MAX];
+
+void push(int e) { if(top<MAX-1) s[++top]=e; }
+int pop() { return (top==-1) ? 0 : s[top--]; }
+
+int eval(char op, int a, int b) {
+    switch(op) {
+        case '+': return a+b;
+        case '-': return a-b;
+        case '*': return a*b;
+        case '/': return a/b;
+        case '%': return (int)fmod(a,b);
+        case '^': return (int)pow(a,b);
+    }
+    return 0;
+}
+
+int main() {
+    char suffix[50];
+    int i, op1, op2, res;
+    double val;
+    
+    printf("Enter Postfix: ");
+    scanf("%s", suffix);
+    
+    for(i=0; suffix[i]; i++) {
+        if(isdigit(suffix[i])) push(suffix[i]-'0');
+        else if(isalpha(suffix[i])) {
+            printf("Value of %c: ", suffix[i]);
+            scanf("%lf", &val);
+            push(val);
+        } else {
+            op2=pop(); op1=pop();
+            push(eval(suffix[i], op1, op2));
+        }
+    }
+    printf("Result: %d\n", pop());
+    return 0;
+}

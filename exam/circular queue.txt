@@ -1,0 +1,46 @@
+//circular queue
+#include<stdio.h>
+#define MAX 5
+int f=-1, r=-1;
+
+void insert(char cq[]) {
+    char e;
+    if((f==0 && r==MAX-1) || (f==r+1)) {
+        printf("\nOverflow!");
+        return;
+    }
+    printf("Enter element: ");
+    scanf(" %c", &e);
+    if(f==-1) f=0;
+    r=(r+1)%MAX;
+    cq[r]=e;
+}
+
+void delete(char cq[]) {
+    if(f==-1) { printf("\nUnderflow!"); return; }
+    printf("Deleted: %c", cq[f]);
+    if(f==r) f=r=-1;
+    else f=(f+1)%MAX;
+}
+
+void display(char cq[]) {
+    if(f==-1) { printf("\nEmpty!"); return; }
+    printf("\nQueue: ");
+    for(int i=f; i!=r; i=(i+1)%MAX) printf("%c ", cq[i]);
+    printf("%c", cq[r]);
+}
+
+int main() {
+    char cq[MAX];
+    int ch;
+    while(1) {
+        printf("\n\n1.Insert 2.Delete 3.Display 4.Exit\nChoice: ");
+        scanf("%d", &ch);
+        switch(ch) {
+            case 1: insert(cq); break;
+            case 2: delete(cq); break;
+            case 3: display(cq); break;
+            case 4: return 0;
+        }
+    }
+}

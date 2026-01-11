@@ -1,0 +1,70 @@
+//binary search tree
+#include<stdio.h>
+#include<stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *left, *right;
+};
+typedef struct Node* NODE;
+
+NODE insert(NODE root, int data) {
+    if(!root) {
+        root = (NODE)malloc(sizeof(struct Node));
+        root->data = data;
+        root->left = root->right = NULL;
+    } else if(data < root->data)
+        root->left = insert(root->left, data);
+    else if(data > root->data)
+        root->right = insert(root->right, data);
+    return root;
+}
+
+void inorder(NODE r) {
+    if(r) { inorder(r->left); printf("%d ", r->data); inorder(r->right); }
+}
+
+void preorder(NODE r) {
+    if(r) { printf("%d ", r->data); preorder(r->left); preorder(r->right); }
+}
+
+void postorder(NODE r) {
+    if(r) { postorder(r->left); postorder(r->right); printf("%d ", r->data); }
+}
+
+int search(NODE r, int key) {
+    if(!r) return 0;
+    if(r->data == key) return 1;
+    return (key < r->data) ? search(r->left, key) : search(r->right, key);
+}
+
+int main() {
+    NODE root = NULL;
+    int ch, n, data, key;
+    
+    while(1) {
+        printf("\n\n1.Create 2.Inorder 3.Preorder 4.Postorder 5.Search 6.Exit\nChoice: ");
+        scanf("%d", &ch);
+        
+        switch(ch) {
+            case 1:
+                printf("Enter n: ");
+                scanf("%d", &n);
+                printf("Enter elements: ");
+                for(int i=0; i<n; i++) {
+                    scanf("%d", &data);
+                    root = insert(root, data);
+                }
+                break;
+            case 2: printf("Inorder: "); inorder(root); break;
+            case 3: printf("Preorder: "); preorder(root); break;
+            case 4: printf("Postorder: "); postorder(root); break;
+            case 5:
+                printf("Enter key: ");
+                scanf("%d", &key);
+                printf(search(root, key) ? "Found!" : "Not found!");
+                break;
+            case 6: return 0;
+        }
+    }
+}

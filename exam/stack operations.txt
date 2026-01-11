@@ -1,0 +1,50 @@
+//stack operations
+#include<stdio.h>
+#define MAX 5
+int top=-1, s[MAX];
+
+void push(int e) {
+    if(top==MAX-1) printf("\nOverflow!");
+    else s[++top]=e;
+}
+
+int pop() {
+    if(top==-1) { printf("\nUnderflow!"); return -1; }
+    return s[top--];
+}
+
+void palindrome() {
+    int n, i, p[10], flag=0;
+    printf("\nEnter no. of digits: ");
+    scanf("%d", &n);
+    printf("Enter digits: ");
+    for(i=0; i<n; i++) scanf("%d", &p[i]);
+    for(i=0; i<n; i++) push(p[i]);
+    for(i=0; i<n; i++) {
+        if(p[i]!=pop()) { flag=1; break; }
+    }
+    printf(flag ? "\nNot Palindrome" : "\nPalindrome");
+}
+
+void display() {
+    if(top==-1) printf("\nEmpty!");
+    else {
+        printf("\nStack: ");
+        for(int i=top; i>=0; i--) printf("%d ", s[i]);
+    }
+}
+
+int main() {
+    int ch, e;
+    while(1) {
+        printf("\n\n1.Push 2.Pop 3.Palindrome 4.Display 5.Exit\nChoice: ");
+        scanf("%d", &ch);
+        switch(ch) {
+            case 1: printf("Enter element: "); scanf("%d", &e); push(e); break;
+            case 2: e=pop(); if(e!=-1) printf("Deleted: %d", e); break;
+            case 3: palindrome(); break;
+            case 4: display(); break;
+            case 5: return 0;
+        }
+    }
+}
