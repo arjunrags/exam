@@ -1,0 +1,148 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+
+struct node {
+    int coef, x, y, z;
+    struct node *link;
+};
+typedef struct node* NODE;
+
+NODE getnode() {
+    NODE n = (NODE)malloc(sizeof(struct node));
+    return n;
+}
+
+NODE attach(int c, int x, int y, int z, NODE h) {
+    NODE temp = getnode(), cur;
+    temp->coef = c;
+    temp->x = x;
+    temp->y = y;
+    temp->z = z;
+    cur = h->link;
+    while(cur->link != h) cur = cur->link;
+    cur->link = temp;
+    temp->link = h;
+    return h;
+}
+
+NODE read_poly(NODE h) {
+    int n, c, x, y, z;
+    printf("Enter no. of terms: ");
+    scanf("%d", &n);
+    for(int i=0; i<n; i++) {
+        printf("Term %d - Coef: ", i+1);
+        scanf("%d", &c);
+        printf("Powers (x y z): ");
+        scanf("%d%d%d", &x, &y, &z);
+        h = attach(c, x, y, z, h);
+    }
+    return h;
+}
+
+void display(NODE h) {
+    if(h->link == h) {
+        printf("Empty polynomial\n");
+        return;
+    }
+    NODE t = h->link;
+    while(t != h) {
+        printf("%dx^%dy^%dz^%d", t->coef, t->x, t->y, t->z);
+        t = t->link;
+        if(t != h) printf(" + ");
+    }
+    printf("\n");
+}
+
+int evaluate(NODE h) {
+    int x, y, z, sum = 0;
+    NODE p;
+    printf("Enter x, y, z: ");
+    scanf("%d%d%d", &x, &y, &z);
+    p = h->link;
+    while(p != h) {
+        sum += p->coef * pow(x, p->x) * pow(y, p->y) * pow(z, p->z);
+        p = p->link;
+    }
+    return sum;
+}
+
+NODE poly_sum(NODE h1, NODE h2, NODE h3) {
+    NODE a = h1->link, b = h2->link;
+    
+    while(a != h1 && b != h2) {
+        if(a->x == b->x && a->y == b->y && a->z == b->z) {
+            h3 = attach(a->coef + b->coef, a->x, a->y, a->z, h3);
+            a = a->link;
+            b = b->link;
+        }
+        else if(a->x > b->x || (a->x == b->x && a->y > b->y) || 
+                (a->x == b->x && a->y == b->y && a->z > b->z)) {
+            h3 = attach(a->coef, a->x, a->y, a->z, h3);
+            a = a->link;
+        }
+        else {
+            h3 = attach(b->coef, b->x, b->y, b->z, h3);
+            b = b->link;
+        }
+    }
+    
+    while(a != h1) {
+        h3 = attach(a->coef, a->x, a->y, a->z, h3);
+        a = a->link;
+    }
+    while(b != h2) {
+        h3 = attach(b->coef, b->x, b->y, b->z, h3);
+        b = b->link;
+    }
+    return h3;
+}
+
+int main() {
+    NODE h, h1, h2, h3;
+    int ch, res;
+    
+    h = getnode();
+    h1 = getnode();
+    h2 = getnode();
+    h3 = getnode();
+    h->link = h;
+    h1->link = h1;
+    h2->link = h2;
+    h3->link = h3;
+    
+    while(1) {
+        printf("\n1.Evaluate Polynomial\n2.Add Polynomials\n3.Exit\nChoice: ");
+        scanf("%d", &ch);
+        
+        switch(ch) {
+            case 1:
+                printf("\nEnter polynomial:\n");
+                h = read_poly(h);
+                printf("Polynomial: ");
+                display(h);
+                res = evaluate(h);
+                printf("Result: %d\n", res);
+                break;
+                
+            case 2:
+                printf("\nEnter POLY1:\n");
+                h1 = read_poly(h1);
+                printf("POLY1: ");
+                display(h1);
+                
+                printf("\nEnter POLY2:\n");
+                h2 = read_poly(h2);
+                printf("POLY2: ");
+                display(h2);
+                
+                h3 = poly_sum(h1, h2, h3);
+                printf("\nSum: ");
+                display(h3);
+                break;
+                
+            case 3:
+                return 0;
+        }
+    }
+}
